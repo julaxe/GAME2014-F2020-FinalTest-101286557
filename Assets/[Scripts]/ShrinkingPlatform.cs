@@ -15,19 +15,31 @@ public class ShrinkingPlatform : MonoBehaviour
     [SerializeField] private float expandingTime;
     [SerializeField] private float waitingTimeToRegrow;
 
-
+    //components
     private BoxCollider2D _boxCollider2D;
+    private AudioSource _audioSource;
+    
+    //shrinking and expanding variables
     private Vector3 _initialScale;
     private bool _isShrinking;
     private bool _isExpanding;
     private double _timer;
+    
+    //audio clips
+    private AudioClip _shrinkingSound, _expandingSound;
     
 
 
     void Start()
     {
         _boxCollider2D = GetComponent<BoxCollider2D>();
+        _audioSource = GetComponent<AudioSource>();
+        
         _initialScale = transform.localScale;
+
+        _shrinkingSound = Resources.Load<AudioClip>("Sounds/shrinkSound");
+        _expandingSound = Resources.Load<AudioClip>("Sounds/expandSound");
+
     }
 
     private void FixedUpdate()
@@ -78,6 +90,7 @@ public class ShrinkingPlatform : MonoBehaviour
                 //starts shrinking
                 _isShrinking = true;
                 _timer = 0;
+                _audioSource.PlayOneShot(_shrinkingSound);
             }
         }
     }
@@ -87,6 +100,7 @@ public class ShrinkingPlatform : MonoBehaviour
         yield return new WaitForSeconds(waitingTimeToRegrow);
         _isExpanding = true;
         _timer = 0.0f;
+        _audioSource.PlayOneShot(_expandingSound);
     }
 
     private void MoveUpAndDown()
